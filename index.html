@@ -1,0 +1,356 @@
+<!doctype html><html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>LexKL Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{--sky1:#7d9bff;--sky2:#b9dcff;--sky3:#eef6ff;--ink:#1a2140;--mut:#5b648c;--surf:#fff;--surf2:#f2f7ff;--line:#dfe9fb;--vio:#7c5cff;--mag:#ff5ca8;--amb:#ffb02e;--mint:#2fd48f;--red:#ff4d6d;--info:#38bdf8;--ghost:#5fe3c9;--sh:0 12px 32px rgba(26,33,64,.14);--disp:'Unbounded',system-ui;--body:'Manrope',system-ui}
+body[data-theme=night]{--sky1:#0e1236;--sky2:#222a63;--sky3:#3a4173;--ink:#eef1ff;--mut:#a7aed4;--surf:#1b2148;--surf2:#232a55;--line:#313b70}
+body[data-season=halloween]{--sky1:#2b1055;--sky2:#5b2a86;--sky3:#ff6ec7;--ghost:#ffb02e}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0}
+body{font-family:var(--body);color:var(--ink);min-height:100dvh;background:linear-gradient(180deg,var(--sky1),var(--sky2) 42%,var(--sky3)) fixed;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+#sky{position:fixed;inset:0;overflow:hidden;pointer-events:none}.sun{position:absolute;top:-90px;right:-70px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,214,140,.8),transparent 70%)}
+.cloud{position:absolute;background:#fff;border-radius:60px;opacity:.8;animation:drift linear infinite}.cloud::before{content:"";position:absolute;width:55%;height:160%;left:12%;bottom:18%;background:#fff;border-radius:50%}
+body[data-theme=night] .cloud{opacity:.15}@keyframes drift{from{transform:translateX(-30vw)}to{transform:translateX(115vw)}}
+.sg{position:absolute;color:var(--ghost);animation:bob 6s ease-in-out infinite alternate}@keyframes bob{from{transform:translateY(-10px) rotate(-4deg)}to{transform:translateY(12px) rotate(5deg)}}
+body[data-motion=off] .cloud,body[data-motion=off] .sg{animation:none}
+.wrap{position:relative;max-width:560px;margin:0 auto;padding:12px 16px 40px}
+header{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:10px 2px;backdrop-filter:blur(14px);background:color-mix(in srgb,var(--sky1) 55%,transparent)}
+h1{font:900 24px var(--disp);margin:6px 0 10px}.tr{display:flex;gap:7px}
+.pro-btn{border:0;cursor:pointer;font:700 12px var(--body);color:#fff;padding:9px 14px;border-radius:18px;background:linear-gradient(100deg,var(--vio),var(--mag),var(--amb))}.pro-btn.is-pro{background:linear-gradient(100deg,#12b981,var(--mint))}
+.ib{width:38px;height:38px;border:0;border-radius:50%;background:var(--surf);color:var(--ink);cursor:pointer;display:grid;place-items:center;box-shadow:var(--sh)}
+.chip{border:0;cursor:pointer;display:flex;gap:6px;align-items:center;background:var(--surf);color:var(--ink);font:800 13px var(--body);padding:8px 12px;border-radius:18px;box-shadow:var(--sh)}
+.xpbar{height:6px;border-radius:3px;background:var(--surf2);overflow:hidden;margin:0 0 12px}.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--mint),var(--info))}
+.pbar{display:flex;gap:8px;align-items:center;background:var(--surf);border-radius:24px;padding:6px 6px 6px 14px;box-shadow:var(--sh)}
+.pbar input{flex:1;min-width:0;border:0;outline:0;background:none;font:600 15px var(--body);color:var(--ink)}
+.go{width:42px;height:42px;border:0;border-radius:50%;color:#fff;cursor:pointer;background:linear-gradient(120deg,var(--vio),var(--mag));display:grid;place-items:center}.go:disabled{opacity:.35}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:14px 0}
+.card{border:0;cursor:pointer;background:var(--surf);border-radius:20px;padding:16px;box-shadow:var(--sh);text-align:left;color:var(--ink);min-height:130px;display:flex;flex-direction:column;gap:6px}
+.card .mi{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;color:#fff;margin-bottom:4px}.card b{font:700 15px var(--body)}.card small{color:var(--mut);font:600 12.5px/1.35 var(--body)}
+.mi.p{background:linear-gradient(135deg,var(--info),var(--vio))}.mi.v{background:linear-gradient(135deg,var(--mag),var(--amb))}.mi.s{background:linear-gradient(135deg,var(--mint),var(--info))}.mi.d{background:linear-gradient(135deg,var(--amb),var(--mag))}
+.wide{width:100%;border:0;cursor:pointer;background:var(--surf);color:var(--ink);border-radius:20px;padding:13px;font:700 14px var(--body);box-shadow:var(--sh);display:flex;gap:8px;align-items:center;justify-content:center;margin-bottom:10px}
+.bonus{display:flex;justify-content:space-between;align-items:center;background:var(--surf);border-radius:20px;padding:12px 15px;box-shadow:var(--sh);margin-bottom:10px}.bonus b{font:700 14px var(--body);display:block}.bonus small{color:var(--mut);font:600 12px var(--body)}
+.bonus button{border:0;cursor:pointer;border-radius:14px;padding:9px 13px;font:800 13px var(--body);color:#fff;background:linear-gradient(100deg,var(--amb),var(--mag))}.bonus button:disabled{opacity:.5}
+.sec{display:flex;justify-content:space-between;align-items:center;margin:20px 2px 10px}h2{font:700 17px var(--disp);margin:0}
+.gal-tools{display:flex;gap:8px;margin-bottom:10px}.gsearch{flex:1;border:2px solid var(--line);border-radius:14px;background:var(--surf);color:var(--ink);font:600 13px var(--body);padding:9px;outline:0}
+.fchips{display:flex;gap:6px;overflow-x:auto;margin-bottom:10px}.fchips button{border:2px solid var(--line);background:var(--surf);color:var(--ink);border-radius:12px;padding:7px 11px;font:700 12px var(--body);cursor:pointer;white-space:nowrap}.fchips button.on{border-color:var(--vio);color:var(--vio)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}@media(min-width:480px){.grid{grid-template-columns:1fr 1fr 1fr}}
+.g{border:0;cursor:pointer;padding:0;background:none;text-align:left;color:var(--ink);position:relative}.g .cov{aspect-ratio:4/5;border-radius:16px;overflow:hidden;box-shadow:var(--sh);background:var(--surf2);display:grid;place-items:center}.g .cov img{width:100%;height:100%;object-fit:cover}.g p{margin:6px 2px 0;font:700 12px/1.3 var(--body);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.g .star{position:absolute;top:7px;right:7px;font-size:15px}.g .doc{font-size:40px}
+.empty{background:var(--surf);border-radius:18px;padding:22px;text-align:center;color:var(--mut);font:600 13px var(--body);box-shadow:var(--sh)}
+footer{margin-top:26px;text-align:center;color:var(--mut);font:600 11.5px var(--body)}
+#scrim{position:fixed;inset:0;background:rgba(10,12,34,.5);opacity:0;pointer-events:none;transition:.3s;z-index:40}#scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:50%;bottom:0;transform:translate(-50%,105%);width:min(560px,100%);max-height:88dvh;overflow:auto;background:var(--surf);border-radius:24px 24px 0 0;z-index:50;padding:10px 18px calc(20px + env(safe-area-inset-bottom));transition:transform .38s cubic-bezier(.2,1,.3,1)}.sheet.on{transform:translate(-50%,0)}
+.handle{width:44px;height:5px;border-radius:3px;background:var(--line);margin:4px auto 12px}.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.sh h3{font:700 17px var(--disp);margin:0}.x{width:34px;height:34px;border:0;border-radius:50%;background:var(--surf2);color:var(--ink);cursor:pointer}
+.seg{display:flex;background:var(--surf2);border-radius:14px;padding:4px;gap:4px;margin-bottom:12px}.seg button{flex:1;border:0;cursor:pointer;border-radius:11px;padding:9px 2px;font:700 12.5px var(--body);background:none;color:var(--mut)}.seg button.on{background:var(--surf);color:var(--ink)}
+textarea{width:100%;border:2px solid var(--line);border-radius:14px;background:var(--surf2);color:var(--ink);font:600 14px/1.45 var(--body);padding:11px;min-height:76px;outline:0}textarea:focus{border-color:var(--vio)}
+.lbl{font:800 11px var(--body);color:var(--mut);text-transform:uppercase;letter-spacing:.6px;margin:14px 0 7px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}.chips button{border:2px solid var(--line);background:var(--surf);color:var(--ink);border-radius:12px;padding:7px 11px;font:700 12.5px var(--body);cursor:pointer}.chips button.on{border-color:var(--vio);color:var(--vio)}
+.row{display:flex;align-items:center;gap:10px;margin:9px 0}.row label{flex:1;font:700 13.5px var(--body)}.row output{font:800 12px var(--body);color:var(--vio);min-width:40px;text-align:right}
+input[type=range]{flex:2;accent-color:var(--vio)}select,input[type=text],input[type=number]{border:2px solid var(--line);border-radius:12px;background:var(--surf);color:var(--ink);font:700 13px var(--body);padding:8px;outline:0}
+.sw{position:relative;width:46px;height:26px;border:0;border-radius:14px;cursor:pointer;background:var(--line)}.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}.sw.on{background:var(--mint)}.sw.on::after{left:23px}
+.cta{width:100%;border:0;cursor:pointer;border-radius:16px;padding:13px;font:800 14px var(--body);color:#fff;background:linear-gradient(100deg,var(--vio),var(--mag));margin-top:9px}.cta:disabled{opacity:.5}.cta.ghosty{background:var(--surf2);color:var(--ink)}.cta.danger{background:linear-gradient(100deg,var(--red),var(--mag))}
+.cost{display:flex;justify-content:space-between;margin:14px 0 4px;font:700 13px var(--body);color:var(--mut)}.cost b{color:var(--ink)}
+.progress{display:none;text-align:center;padding:24px 0}.progress.on{display:block}.pbar2{height:8px;border-radius:4px;background:var(--surf2);overflow:hidden;margin:12px 0}.pbar2 i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--vio),var(--mag),var(--amb));transition:width .4s}.stage{font:700 13px var(--body);color:var(--mut)}
+.preview{border-radius:18px;overflow:hidden;box-shadow:var(--sh);margin-bottom:12px;background:var(--surf2)}.preview img,.preview object,.preview video{width:100%;display:block}.preview audio{width:100%}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.meta span{background:var(--surf2);border-radius:9px;padding:4px 9px;font:700 11.5px var(--body);color:var(--mut)}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap}.btnrow .cta{flex:1;min-width:45%}
+.plan{border:2px solid var(--line);border-radius:16px;padding:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;cursor:pointer}.plan.on{border-color:var(--vio);background:color-mix(in srgb,var(--vio) 10%,var(--surf))}.plan b{font:700 14px var(--body)}.plan small{display:block;color:var(--mut);font:600 11.5px var(--body)}.plan .pr{font:800 15px var(--body);color:var(--vio)}
+.banner{background:color-mix(in srgb,var(--mint) 20%,var(--surf));border-radius:16px;padding:13px;font:700 13px/1.45 var(--body);margin-bottom:11px}
+.ref{display:flex;gap:10px;align-items:center}.ref img{width:52px;height:52px;border-radius:12px;object-fit:cover}.ref button{border:0;background:var(--surf2);color:var(--ink);border-radius:10px;padding:8px 10px;font:700 12px var(--body);cursor:pointer}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}.stat{background:var(--surf2);border-radius:14px;padding:12px}.stat b{font:800 18px var(--disp);display:block}.stat small{color:var(--mut);font:600 11px var(--body)}
+#toasts{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));z-index:95;display:flex;flex-direction:column;gap:8px;width:min(420px,92vw)}
+.toast{background:var(--ink);color:var(--sky3);border-radius:14px;padding:12px 14px;font:700 13px var(--body);display:flex;justify-content:space-between;gap:10px;align-items:center}.toast button{border:0;background:linear-gradient(90deg,var(--vio),var(--mag));color:#fff;border-radius:9px;padding:6px 10px;font:800 12px var(--body);cursor:pointer}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tplrow{display:flex;gap:10px;overflow-x:auto;padding-bottom:10px}.tpl{flex:none;width:120px;border:0;cursor:pointer;background:none;padding:0;text-align:left;color:var(--ink)}.tpl .cov{width:120px;height:150px;border-radius:15px;overflow:hidden;box-shadow:var(--sh);background:var(--surf2);display:grid;place-items:center;font-size:34px}.tpl p{margin:6px 2px 0;font:700 12px var(--body)}
+#editCv{width:100%;border-radius:14px;touch-action:none;background:#000}
+.feeditem{background:var(--surf2);border-radius:16px;padding:12px;margin-bottom:10px}.feeditem img{width:100%;border-radius:12px}.feeditem .fh{display:flex;justify-content:space-between;font:700 12px var(--body);margin-bottom:8px}
+#onb{position:fixed;inset:0;z-index:99;background:rgba(10,12,34,.72);display:none;place-items:center;padding:24px}#onb.on{display:grid}
+.onbcard{background:var(--surf);border-radius:22px;padding:24px;max-width:340px;text-align:center;color:var(--ink)}.onbcard h3{font:700 18px var(--disp);margin:0 0 10px}.onbcard p{font:600 14px/1.5 var(--body);color:var(--mut)}
+.skinrow{display:flex;gap:8px}.skinrow button{width:38px;height:38px;border-radius:50%;border:3px solid var(--line);cursor:pointer}.skinrow button.on{border-color:var(--ink)}
+</style></head><body data-theme="day" data-motion="on">
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="i-ghost" viewBox="0 0 24 24"><path d="M12 2.6c-4.6 0-7.6 3.5-7.6 8v9.8l2.5-2 2.5 2 2.6-2 2.6 2 2.5-2 2.5 2V10.6c0-4.5-3-8-7.6-8Z" fill="currentColor" stroke="none"/><ellipse cx="9.3" cy="10.4" rx="1.5" ry="2.1" fill="#fff"/><ellipse cx="14.7" cy="10.4" rx="1.5" ry="2.1" fill="#fff"/></symbol>
+<symbol id="i-photo" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="m5 17 4.5-4.5 3 3L16 12l3 3.5"/></symbol>
+<symbol id="i-video" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="3"/><path d="m16 10 5-2.5v9L16 14"/></symbol>
+<symbol id="i-note" viewBox="0 0 24 24"><path d="M9 18V6l10-2v11.5"/><circle cx="6.8" cy="18" r="2.4"/><circle cx="16.8" cy="15.5" r="2.4"/></symbol>
+<symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6Z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h13m-5-6 6 6-6 6"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v3m0 12.4v3M2.8 12h3m12.4 0h3"/></symbol>
+<symbol id="i-snd" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></symbol>
+<symbol id="i-mute" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path d="m17 9 5 6m0-6-5 6"/></symbol>
+<symbol id="i-dice" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="9" cy="9" r="1" fill="currentColor"/><circle cx="15" cy="15" r="1" fill="currentColor"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8Z"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4Z"/></symbol>
+</defs></svg>
+<div id="sky"><div class="sun"></div><div class="cloud" style="top:8%;width:150px;height:42px;animation-duration:80s"></div><div class="cloud" style="top:24%;width:110px;height:32px;animation-duration:100s;animation-delay:-40s"></div>
+<svg class="sg" style="top:11%;left:5%;width:60px"><use href="#i-ghost"/></svg><svg class="sg" style="top:27%;right:7%;width:84px;animation-delay:-2s"><use href="#i-ghost"/></svg></div>
+<div class="wrap">
+<header><h1>Меню</h1><div class="tr"><button class="ib" id="sndBtn"><svg class="i"><use href="#i-snd"/></svg></button><button class="ib" id="setBtn"><svg class="i"><use href="#i-gear"/></svg></button><button class="chip" id="balChip"><svg class="i" style="color:var(--ghost)"><use href="#i-ghost"/></svg><span id="balVal">0</span></button><button class="pro-btn" id="proBtn">PRO</button></div></header>
+<div class="xpbar"><i id="xpFill"></i></div><div id="lvlLine" style="font:700 12px var(--body);color:var(--mut);margin:-6px 0 10px"></div>
+<div class="banner" id="seasonBn" hidden>🎃 Сезонный режим: хэллоуин-палитра и двойные квесты!</div>
+<form class="pbar" id="pForm"><svg class="i" style="color:var(--mut)"><use href="#i-search"/></svg><input id="pInput" placeholder="Чё на уме?" maxlength="300"><button type="button" class="ib" id="diceBtn" style="box-shadow:none;background:var(--surf2)"><svg class="i"><use href="#i-dice"/></svg></button><button class="go" id="pGo" disabled><svg class="i"><use href="#i-arrow"/></svg></button></form>
+<div class="cards">
+<button class="card" data-mode="photo"><span class="mi p"><svg class="i"><use href="#i-photo"/></svg></span><b>Создать фото</b><small>По описанию или референсу</small></button>
+<button class="card" data-mode="video"><span class="mi v"><svg class="i"><use href="#i-video"/></svg></span><b>Создать видео</b><small>Короткий клип mp4</small></button>
+<button class="card" data-mode="song"><span class="mi s"><svg class="i"><use href="#i-note"/></svg></span><b>Создать песню</b><small>Текст, стиль, дуэт</small></button>
+<button class="card" id="docCard"><span class="mi d"><svg class="i"><use href="#i-doc"/></svg></span><b>Шаблоны</b><small>8 документов + batch</small></button></div>
+<button class="wide" id="chatBtn"><svg class="i"><use href="#i-chat"/></svg>Открыть чат · вернуться к боту</button>
+<div class="bonus"><div><b>🎁 Ежедневный бонус</b><small id="bonusSub">Серия: 0</small></div><button id="bonusBtn">Забрать</button></div>
+<button class="wide" id="questBtn">🎯 Квесты и уровень</button>
+<button class="wide" id="feedBtn">🌍 Лента и конкурс</button>
+<button class="wide" id="achBtn">🏆 Достижения <span id="achCnt" style="color:var(--vio)">0/8</span></button>
+<button class="wide" id="adminBtn" hidden>🛠 Админ-панель</button>
+<div class="sec"><h2>Шаблоны</h2></div><div class="tplrow" id="tplRow"></div>
+<div class="sec"><h2>Мои работы</h2><span id="galCnt" style="font:800 13px var(--body);color:var(--mut)">0</span></div>
+<div class="gal-tools"><input class="gsearch" id="gSearch" placeholder="Поиск по работам…"></div>
+<div class="fchips" id="gFilter"><button data-f="all" class="on">Все</button><button data-f="fav">⭐</button><button data-f="photo">Фото</button><button data-f="video">Видео</button><button data-f="song">Песни</button><button data-f="doc">Доки</button><button data-f="clip">Клипы</button></div>
+<div class="grid" id="grid"></div><div class="empty" id="gEmpty" hidden>Пока пусто — создай первую работу 👻</div>
+<footer id="foot"></footer></div>
+<div id="scrim"></div>
+<section class="sheet" id="shComp"><div class="handle"></div><div class="sh"><h3>Создать</h3><button class="x" data-close>✕</button></div>
+<div id="compBody"><div class="seg" id="compSeg"><button data-m="photo">🖼 Фото</button><button data-m="video">🎬 Видео</button><button data-m="song">🎵 Песня</button></div>
+<textarea id="compPrompt" placeholder="Опиши, что создать…" maxlength="300"></textarea>
+<button class="cta ghosty" id="impBtn"><svg class="i" style="vertical-align:-4px"><use href="#i-spark"/></svg> Улучшить промпт</button>
+<div class="lbl">Стиль</div><div class="chips" id="styleChips"></div>
+<div id="optVisual"><div class="row"><label>Соотношение</label><select id="optAspect"><option>4:5</option><option>1:1</option><option>16:9</option><option>9:16</option></select></div>
+<div class="row" id="durRow"><label>Длительность</label><input type="range" id="optDur" min="3" max="10" value="6"><output id="durOut">6 с</output></div>
+<div class="row" id="refRow"><label>Референс</label><input type="file" id="refFile" accept="image/*" hidden><div class="ref"><button id="refBtn">Загрузить</button><img id="refPrev" hidden><button id="refClear" hidden>✕</button></div></div>
+<div class="row" id="strRow"><label>Сила референса</label><input type="range" id="optStr" min="10" max="90" value="45"><output id="strOut">45%</output></div></div>
+<div id="optAudio" hidden><div class="lbl">Настроение</div><div class="chips" id="moodChips"></div>
+<div class="row"><label>Темп</label><input type="range" id="optTempo" min="70" max="150" value="104"><output id="tempoOut">104</output></div>
+<div class="row"><label>Длительность</label><input type="range" id="optSongDur" min="6" max="16" value="10"><output id="songDurOut">10 с</output></div>
+<div class="row"><label>Дуэт (второй голос)</label><button class="sw" id="optDuet"></button></div>
+<div class="lbl">Текст песни</div><textarea id="lyricsBox" placeholder="Свой текст или сгенерируй…" style="min-height:60px"></textarea><button class="cta ghosty" id="lyrBtn">✍️ Сгенерировать текст</button></div>
+<div class="row"><label>Высокое качество (+1 👻)</label><button class="sw" id="optHQ"></button></div>
+<div class="cost"><span>Стоимость</span><b id="costVal">1 👻</b></div><button class="cta" id="genBtn">Создать</button></div>
+<div class="progress" id="compProg"><svg class="sg" style="position:static;width:70px;color:var(--ghost)"><use href="#i-ghost"/></svg><div class="pbar2"><i id="pFill"></i></div><div class="stage" id="pStage">В очереди…</div></div></section>
+<section class="sheet" id="shEdit"><div class="handle"></div><div class="sh"><h3>Редактор</h3><button class="x" data-close>✕</button></div>
+<canvas id="editCv" width="400" height="500"></canvas>
+<div class="chips" style="margin:10px 0"><button id="brushBtn" class="on">🖌 Кисть маски</button><button id="clearMask">Стереть маску</button></div>
+<div class="row"><label>Размер кисти</label><input type="range" id="brushSize" min="8" max="60" value="24"></div>
+<textarea id="editPrompt" placeholder="Что дорисовать в masked-области…" style="min-height:56px"></textarea>
+<div class="btnrow"><button class="cta" id="opInpaint">Inpaint</button><button class="cta ghosty" id="opUpscale">Upscale ×2</button><button class="cta ghosty" id="opBg">Убрать фон</button></div></section>
+<section class="sheet" id="shDoc"><div class="handle"></div><div class="sh"><h3>Документ</h3><button class="x" data-close>✕</button></div>
+<div class="chips" id="docTypes"></div><div id="docFields"></div>
+<div class="btnrow"><button class="cta ghosty" id="profFill">👤 Мои данные</button><button class="cta ghosty" id="profSave">💾 Сохранить профиль</button></div>
+<div class="lbl">Batch из CSV</div><input type="file" id="csvFile" accept=".csv" style="font:600 12px var(--body)">
+<button class="cta" id="docGo">Создать DOCX + PDF</button><button class="cta ghosty" id="batchGo">📚 Batch по CSV</button></section>
+<section class="sheet" id="shWork"><div class="handle"></div><div class="sh"><h3 id="workTitle">Работа</h3><button class="x" data-close>✕</button></div><div id="workBody"></div></section>
+<section class="sheet" id="shPro"><div class="handle"></div><div class="sh"><h3>PRO и 👻</h3><button class="x" data-close>✕</button></div><div id="proBody"></div></section>
+<section class="sheet" id="shQuest"><div class="handle"></div><div class="sh"><h3>Квесты и скины</h3><button class="x" data-close>✕</button></div><div id="questBody"></div></section>
+<section class="sheet" id="shFeed"><div class="handle"></div><div class="sh"><h3>Лента</h3><button class="x" data-close>✕</button></div>
+<div class="seg" id="feedSeg"><button data-t="feed" class="on">🌍 Работы</button><button data-t="top">🏆 Конкурс</button></div><div id="feedBody"></div></section>
+<section class="sheet" id="shAch"><div class="handle"></div><div class="sh"><h3>Достижения</h3><button class="x" data-close>✕</button></div><div id="achList"></div></section>
+<section class="sheet" id="shAdmin"><div class="handle"></div><div class="sh"><h3>Админ-панель</h3><button class="x" data-close>✕</button></div><div id="adminBody"></div></section>
+<section class="sheet" id="shSet"><div class="handle"></div><div class="sh"><h3>Настройки</h3><button class="x" data-close>✕</button></div>
+<div class="lbl">Тема</div><div class="chips" id="themeChips"><button data-t="auto">Авто</button><button data-t="day">День</button><button data-t="night">Ночь</button></div>
+<div class="row"><label>Звук</label><button class="sw" id="setSnd"></button></div><div class="row"><label>Вибрация</label><button class="sw" id="setHap"></button></div><div class="row"><label>Анимации</label><button class="sw" id="setMot"></button></div>
+<button class="cta ghosty" id="fsBtn">⛶ Полный экран</button><button class="cta ghosty" id="homeBtn">📲 На рабочий стол</button><button class="cta ghosty" id="writeBtn">🔔 Разрешить уведомления</button>
+<div class="lbl">API-ключ</div><div class="banner" id="keyBox" style="word-break:break-all"></div><button class="cta ghosty" id="keyBtn">🔑 Новый ключ</button>
+<div class="banner" id="setInfo" style="margin-top:12px"></div>
+<div class="banner">💬 Inline: <b>@имя_бота промпт</b> в любом чате. 📦 /export и 🗑 /forget — в чате бота.</div></section>
+<div id="onb"><div class="onbcard"><h3 id="onbT"></h3><p id="onbP"></p><button class="cta" id="onbNext">Дальше</button><button class="cta ghosty" id="onbSkip">Пропустить</button></div></div>
+<div id="toasts"></div>
+<script>
+'use strict';(function(){
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const tg=window.Telegram&&Telegram.WebApp,inTG=!!(tg&&tg.initData);
+if(inTG){tg.ready();tg.expand();try{tg.disableVerticalSwipes()}catch(e){}}
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const hap=t=>{if(!SET.haptics||!inTG)return;try{t==='ok'?tg.HapticFeedback.notificationOccurred('success'):tg.HapticFeedback.impactOccurred('light')}catch(e){}};
+let SET=Object.assign({theme:'auto',sound:true,haptics:true,motion:true},JSON.parse(localStorage.getItem('lex.set')||'{}'));
+const saveSet=()=>{localStorage.setItem('lex.set',JSON.stringify(SET));if(inTG&&tg.CloudStorage)tg.CloudStorage.setItem('lex_set',JSON.stringify(SET),()=>{})};
+if(inTG&&tg.CloudStorage)tg.CloudStorage.getItem('lex_set',(e,v)=>{if(!e&&v){try{SET=Object.assign(SET,JSON.parse(v));applySet()}catch(x){}}});
+const effTheme=()=>SET.theme==='auto'?((inTG&&tg.colorScheme==='dark')?'night':'day'):SET.theme;
+const SKINS={mint:'#5fe3c9',violet:'#7c5cff',magenta:'#ff5ca8',amber:'#ffb02e',ice:'#38bdf8'};
+function applySet(){document.body.dataset.theme=effTheme();document.body.dataset.motion=SET.motion?'on':'off';document.body.dataset.season=(S&&S.season)||'';
+if(S&&S.user.skin)document.documentElement.style.setProperty('--ghost',SKINS[S.user.skin]||SKINS.mint);
+$('#sndBtn use').setAttribute('href',SET.sound?'#i-snd':'#i-mute');$('#setSnd').classList.toggle('on',SET.sound);$('#setHap').classList.toggle('on',SET.haptics);$('#setMot').classList.toggle('on',SET.motion);
+$$('#themeChips button').forEach(b=>b.classList.toggle('on',b.dataset.t===SET.theme));}
+if(inTG)tg.onEvent('themeChanged',applySet);
+let AC=null;const ac=()=>{if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC};
+function blip(f,d,g,w){if(!SET.sound)return;try{const c=ac(),t=w||c.currentTime,o=c.createOscillator(),v=c.createGain();o.frequency.value=f;v.gain.setValueAtTime(0,t);v.gain.linearRampToValueAtTime(g||.1,t+.01);v.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(v).connect(c.destination);o.start(t);o.stop(t+d+.05)}catch(e){}}
+const sfx={tap:()=>blip(660,.09,.06),ok:()=>{blip(523,.14,.1);blip(784,.22,.1,AC?AC.currentTime+.1:0)},ach:()=>{[523,659,784,1046].forEach((f,i)=>blip(f,.18,.09,AC?AC.currentTime+i*.09:0))},err:()=>blip(180,.2,.06)};
+const STYLES=['Кино','Аниме','Неон','Акварель','Ретро','3D'],MOODS=['Мечтательная','Тревожная','Героическая','Lo-fi'];
+const IDEAS=['Призрак на закате над облаками','Неоновый город под дождём','Кот-астронавт в оранжерее','Маяк на краю мира, шторм','Лунная колыбельная для робота','Ретро-трасса к солнцу'];
+const TPL=[{t:'Без дистанции',m:'photo',s:'Кино',p:'Портрет пары крупным планом, тёплый свет'},{t:'Против света',m:'photo',s:'Кино',p:'Силуэт против солнца, блики'},{t:'Неоновый дождь',m:'photo',s:'Неон',p:'Ночной город под дождём'},{t:'Ретро-волна',m:'video',s:'Ретро',p:'Дорога к солнцу, synthwave'},{t:'Лунная колыбельная',m:'song',s:'Кино',p:'Нежная колыбельная под луной',mood:'Мечтательная'},{t:'Облачный атлас',m:'video',s:'Аниме',p:'Призрак плывёт над облаками'}];
+const COST={photo:1,video:3,song:2,doc:1,clip:4,edit:1,sticker:1,emoji:1,cover:1,ringtone:1,gif:1};
+async function api(path,body){const r=await fetch(path,{method:body?'POST':'GET',headers:{'Content-Type':'application/json','X-Telegram-Init-Data':tg.initData},body:body?JSON.stringify(body):undefined});const j=await r.json().catch(()=>({}));if(!r.ok)throw j;return j}
+let S=null,openId=null,plan='month',editWork=null,maskCv=null;
+const C={mode:'photo',style:'Кино',mood:'Мечтательная',ref:null};
+function toast(msg,action){const t=document.createElement('div');t.className='toast';t.innerHTML='<span>'+msg+'</span>';if(action){const b=document.createElement('button');b.textContent=action.label;b.onclick=()=>{action.fn();t.remove()};t.appendChild(b)}$('#toasts').appendChild(t);setTimeout(()=>t.remove(),action?5200:3200)}
+function openSheet(id){closeSheet(true);openId=id;$('#scrim').classList.add('on');$(id).classList.add('on');if(inTG){try{tg.BackButton.show();tg.BackButton.onClick(closeSheet)}catch(e){}}}
+function closeSheet(silent){if(!openId)return;$(openId).classList.remove('on');$('#scrim').classList.remove('on');openId=null;if(inTG&&!silent){try{tg.BackButton.hide();tg.BackButton.offClick(closeSheet)}catch(e){}}}
+$('#scrim').onclick=()=>closeSheet();$$('[data-close]').forEach(b=>b.onclick=()=>closeSheet());
+function renderTop(){$('#balVal').textContent=S.pro?'∞':S.balance;const b=$('#proBtn');b.classList.toggle('is-pro',S.pro);b.textContent=S.pro?(S.user.owner?'PRO 👑':'PRO ✓ '+S.user.tier):'PRO';
+const lvl=S.user.level,need=lvl*lvl*100,prev=(lvl-1)*(lvl-1)*100;$('#xpFill').style.width=Math.min(100,(S.user.xp-prev)/(need-prev)*100)+'%';$('#lvlLine').textContent='Уровень '+lvl+' · '+S.user.xp+' XP · тариф '+S.user.tier;
+$('#bonusSub').textContent='Серия: '+S.streak+' дней';$('#bonusBtn').disabled=!S.can_bonus;$('#bonusBtn').textContent=S.can_bonus?'Забрать':'Завтра';
+$('#adminBtn').hidden=!S.user.admin;$('#seasonBn').hidden=!S.season;$('#foot').textContent='LexKL Studio · '+esc(S.user.name)+' · меню внутри Telegram';
+$('#setInfo').innerHTML=S.user.owner?'👑 Владелец (ID '+S.user.id+'). PRO навсегда.':(S.pro?'✅ PRO до '+new Date(S.pro_until*1000).toLocaleDateString('ru'):'Баланс: '+S.balance+' 👻');
+$('#keyBox').textContent=S.api_key||'Ключа нет — создай для /v1/generate';}
+function renderTpl(){$('#tplRow').innerHTML=TPL.map((t,i)=>'<button class="tpl" data-tpl="'+i+'"><span class="cov">'+({photo:'🖼',video:'🎬',song:'🎵'})[t.m]+'</span><p>'+esc(t.t)+'</p></button>').join('')}
+function renderGallery(){const q=($('#gSearch').value||'').toLowerCase(),f=$('#gFilter .on').dataset.f;
+const list=S.gallery.filter(it=>(f==='all'||(f==='fav'?it.fav:it.kind===f))&&(it.params.prompt||it.params.tpl||'').toLowerCase().includes(q));
+$('#galCnt').textContent=S.gallery.length;$('#gEmpty').hidden=list.length>0;
+$('#grid').innerHTML=list.map(it=>{const img=it.files.find(f=>f.name.endsWith('.png')||f.name.endsWith('.svg')||f.name.endsWith('.gif'));
+const inner=img?'<img src="'+img.url+'" alt="">':(it.kind==='song'||it.kind==='ringtone'?'<span class="doc">🎵</span>':it.kind==='video'||it.kind==='clip'?'<span class="doc">🎬</span>':'<span class="doc">📄</span>');
+return '<button class="g" data-work="'+it.id+'"><span class="cov">'+inner+'</span>'+(it.fav?'<span class="star">⭐</span>':'')+'<p>'+esc(it.params.prompt||it.params.tpl||it.kind)+'</p></button>'}).join('')}
+const ACH=[{ic:'👻',t:'Первый шёпот',c:s=>s.stats.gen,m:1},{ic:'✋',t:'Пятёрка',c:s=>s.stats.gen,m:5},{ic:'🔟',t:'Десятка',c:s=>s.stats.gen,m:10},{ic:'🎭',t:'Мультимастер',c:s=>['photo','video','song','doc'].filter(k=>s.stats[k]>0).length,m:4},{ic:'🔥',t:'Серия 3',c:s=>s.streak,m:3},{ic:'🤝',t:'Амбассадор',c:s=>s.ref_count,m:1},{ic:'⭐',t:'Куратор',c:s=>s.gallery.filter(g=>g.fav).length,m:3},{ic:'👑',t:'PRO',c:s=>s.pro?1:0,m:1}];
+function renderAch(){$('#achCnt').textContent=ACH.filter(a=>a.c(S)>=a.m).length+'/'+ACH.length;
+$('#achList').innerHTML=ACH.map(a=>{const c=Math.min(a.c(S),a.m),ok=c>=a.m;return '<div class="banner" style="opacity:'+(ok?1:.55)+'">'+(ok?a.ic:'🔒')+' <b>'+a.t+'</b> · '+c+'/'+a.m+'</div>'}).join('')}
+function renderAll(){renderTop();renderGallery();renderAch();applySet()}
+async function refresh(){S=await api('/api/state');renderAll()}
+function syncComposer(){$$('#compSeg button').forEach(b=>b.classList.toggle('on',b.dataset.m===C.mode));const song=C.mode==='song';
+$('#optVisual').hidden=song;$('#optAudio').hidden=!song;$('#durRow').style.display=C.mode==='video'?'':'none';$('#refRow').style.display=C.mode==='photo'?'':'none';$('#strRow').style.display=C.mode==='photo'?'':'none';
+$('#styleChips').innerHTML=STYLES.map(s=>'<button class="'+(s===C.style?'on':'')+'" data-s="'+s+'">'+s+'</button>').join('');
+$('#moodChips').innerHTML=MOODS.map(m=>'<button class="'+(m===C.mood?'on':'')+'" data-mood="'+m+'">'+m+'</button>').join('');
+const cost=COST[C.mode]+($('#optHQ').classList.contains('on')?1:0);$('#costVal').textContent=S.pro?'PRO — без лимита':cost+' 👻';$('#genBtn').textContent='Создать · '+({photo:'фото',video:'видео',song:'песня'})[C.mode]}
+function openComposer(mode,prompt){C.mode=mode||C.mode;$('#compPrompt').value=prompt||$('#pInput').value||'';$('#compBody').style.display='';$('#compProg').classList.remove('on');syncComposer();openSheet('#shComp')}
+$('#compSeg').onclick=e=>{const b=e.target.closest('[data-m]');if(b){C.mode=b.dataset.m;sfx.tap();syncComposer()}};
+$('#styleChips').onclick=e=>{const b=e.target.closest('[data-s]');if(b){C.style=b.dataset.s;sfx.tap();syncComposer()}};
+$('#moodChips').onclick=e=>{const b=e.target.closest('[data-mood]');if(b){C.mood=b.dataset.mood;sfx.tap();syncComposer()}};
+$('#optHQ').onclick=e=>{e.currentTarget.classList.toggle('on');sfx.tap();syncComposer()};
+$('#optDuet').onclick=e=>e.currentTarget.classList.toggle('on');
+$('#optDur').oninput=e=>$('#durOut').textContent=e.target.value+' с';$('#optTempo').oninput=e=>$('#tempoOut').textContent=e.target.value;$('#optSongDur').oninput=e=>$('#songDurOut').textContent=e.target.value+' с';$('#optStr').oninput=e=>$('#strOut').textContent=e.target.value+'%';
+$('#refBtn').onclick=()=>$('#refFile').click();
+$('#refFile').onchange=e=>{const f=e.target.files[0];if(!f)return;if(f.size>1500000){toast('Файл до 1.5 МБ');return}const r=new FileReader();r.onload=()=>{C.ref=r.result;$('#refPrev').src=C.ref;$('#refPrev').hidden=false;$('#refClear').hidden=false};r.readAsDataURL(f)};
+$('#refClear').onclick=()=>{C.ref=null;$('#refPrev').hidden=true;$('#refClear').hidden=true;$('#refFile').value=''};
+$('#impBtn').onclick=async()=>{const p=$('#compPrompt').value.trim();if(!p){toast('Сначала промпт');return}$('#impBtn').disabled=true;try{const r=await api('/api/improve',{prompt:p,style:C.style});$('#compPrompt').value=r.prompt;toast(r.src==='llm'?'✨ Улучшено нейросетью':'✨ Улучшено локально');sfx.ok()}catch(e){toast('Не вышло')}$('#impBtn').disabled=false};
+$('#lyrBtn').onclick=async()=>{$('#lyrBtn').disabled=true;try{const r=await api('/api/lyrics',{prompt:$('#compPrompt').value,mood:C.mood});$('#lyricsBox').value=r.lyrics;sfx.ok()}catch(e){toast('Не вышло')}$('#lyrBtn').disabled=false};
+const STAGES={photo:['В очереди…','Смешиваю краски…','Рендерю…'],video:['В очереди…','Ставлю камеру…','Кодирую mp4…'],song:['В очереди…','Пишу мелодию…','Свожу…'],doc:['В очереди…','Собираю DOCX…','Делаю PDF…'],clip:['В очереди…','Ken Burns…','Визуализатор…'],edit:['В очереди…','Правлю пиксели…'],sticker:['В очереди…','Вырезаю фон…','WebP…'],emoji:['В очереди…','100×100…'],cover:['В очереди…','Обложка…'],ringtone:['В очереди…','Нарезка 30 с…'],gif:['В очереди…','GIF…']};
+let busy=false;
+async function poll(id,kind){const t0=Date.now();while(Date.now()-t0<240000){const j=await api('/api/jobs/'+id);if(j.status==='done')return j;if(j.status==='error')throw{code:'job',error:j.error};
+const st=STAGES[kind]||STAGES.photo;const k=Math.min(st.length-1,Math.floor((Date.now()-t0)/2500));$('#pStage').textContent=st[k]+(j.tries>1?' · попытка '+j.tries:'');$('#pFill').style.width=Math.min(92,10+(Date.now()-t0)/2400)+'%';await new Promise(r=>setTimeout(r,1200))}throw{code:'timeout'}}
+async function runJob(payload,kind){busy=true;$('#genBtn').disabled=true;$('#compBody').style.display='none';$('#compProg').classList.add('on');$('#pFill').style.width='6%';
+try{const r=await api('/api/jobs',payload);if(!r.cached)await poll(r.job,kind);$('#pFill').style.width='100%';await refresh();closeSheet();openWork(r.job);sfx.ok();hap('ok');if(r.cached)toast('⚡ Из кэша — бесплатно');return r.job}
+catch(e){$('#compBody').style.display='';$('#compProg').classList.remove('on');
+if(e.code==='nobalance'){toast('Не хватает 👻');openPro()}else if(e.code==='moderation')toast('🚫 Отклонено модерацией');else if(e.code==='rate')toast('⏳ Подожди минуту');else if(e.code==='busy')toast('⏳ Лимит параллельных задач тарифа');else toast('Ошибка: '+(e.error||e.code||'сеть'));return null}
+finally{busy=false;$('#genBtn').disabled=false}}
+$('#genBtn').onclick=async()=>{const prompt=$('#compPrompt').value.trim();if(!prompt){sfx.err();toast('Напиши промпт ✍️');return}
+await runJob({mode:C.mode,prompt,style:C.style,hq:$('#optHQ').classList.contains('on'),aspect:$('#optAspect').value,dur:+(C.mode==='song'?$('#optSongDur').value:$('#optDur').value),tempo:+$('#optTempo').value,mood:C.mood,ref:C.ref,strength:+$('#optStr').value/100,lyrics:$('#lyricsBox').value,duet:$('#optDuet').classList.contains('on')},C.mode)};
+function openWork(id){const it=S.gallery.find(g=>g.id===id);if(!it){toast('Не найдено');return}
+$('#workTitle').textContent=({photo:'Фото',video:'Видео',song:'Песня',doc:'Документ',clip:'Клип',edit:'Правка',sticker:'Стикер',emoji:'Эмодзи',cover:'Обложка',ringtone:'Рингтон',gif:'GIF'})[it.kind]||it.kind;
+const png=it.files.find(f=>f.name.endsWith('.png')),svg=it.files.find(f=>f.name.endsWith('.svg')),mp4=it.files.find(f=>f.name.endsWith('.mp4')),gif=it.files.find(f=>f.name.endsWith('.gif')),aud=it.files.find(f=>f.name.endsWith('.mp3')||f.name.endsWith('.wav')),webp=it.files.find(f=>f.name.endsWith('.webp'));
+let prev='';
+if(mp4)prev='<div class="preview"><video controls src="'+mp4.url+'"></video></div>';
+else if(gif)prev='<div class="preview"><img src="'+gif.url+'"></div>';
+else if(png||webp||svg)prev='<div class="preview"><img src="'+(png||webp||svg).url+'"></div>';
+else if(aud)prev='<div class="preview" style="padding:12px"><audio controls src="'+aud.url+'"></audio></div>';
+else prev='<div class="preview" style="padding:22px;text-align:center;font-size:44px">📄</div>';
+const dl=it.files.map(f=>'<a class="cta ghosty" style="text-decoration:none;text-align:center" href="'+f.url+'" download>⬇ '+f.name.split('.').pop().toUpperCase()+'</a>').join('');
+let extra='';
+if(it.kind==='photo')extra='<button class="cta ghosty" data-act="edit">🖌 Редактор</button><button class="cta ghosty" data-act="sticker">😜 Стикерпак</button><button class="cta ghosty" data-act="emoji">🎭 Эмодзи-пак</button><button class="cta ghosty" data-act="clip">🎬 Клип</button>';
+if(it.kind==='song')extra='<button class="cta ghosty" data-act="cover">🖼 Обложка</button><button class="cta ghosty" data-act="ringtone">📱 Рингтон</button><button class="cta ghosty" data-act="clip">🎬 Клип</button>';
+if(it.kind==='video'||it.kind==='clip')extra='<button class="cta ghosty" data-act="gif">🌀 GIF</button>';
+if(it.kind==='doc')extra='<button class="cta ghosty" data-act="email">📧 На email</button>';
+$('#workBody').innerHTML=prev+'<div class="meta"><span>'+esc(it.params.style||it.params.tpl||'')+'</span>'+(it.params.aspect?'<span>'+it.params.aspect+'</span>':'')+(it.params.hq?'<span>HQ</span>':'')+'<span>'+new Date(it.ts*1000).toLocaleDateString('ru')+'</span></div><p style="font:600 13.5px/1.5 var(--body);color:var(--mut)">'+esc(it.params.prompt||'')+'</p><div class="btnrow">'+dl+'</div><div class="btnrow">'+extra+'</div><div class="btnrow"><button class="cta" data-act="send">💬 В чат</button><button class="cta ghosty" data-act="story">📖 В Stories</button><button class="cta ghosty" data-act="pub">'+(it.published?'🌍 В ленте ✓':'🌍 В ленту')+'</button></div><div class="btnrow"><button class="cta ghosty" data-act="fav">'+(it.fav?'★':'☆')+'</button><button class="cta ghosty" data-act="again">↻</button><button class="cta danger" data-act="del">🗑</button></div>';
+openSheet('#shWork');
+$('#workBody').onclick=async e=>{const b=e.target.closest('[data-act]');if(!b)return;const act=b.dataset.act;sfx.tap();
+if(act==='send'){await api('/api/send',{id});toast('Отправлю в чат 💬')}
+else if(act==='story'){const f=png||mp4||svg;if(inTG&&tg.shareToStory&&f)tg.shareToStory(location.origin+f.url,{text:'Сделано в @LexKLBot',widget_link:{url:'https://t.me/LexKLBot',name:'Создать своё'}});else toast('Stories доступны в Telegram')}
+else if(act==='pub'){const r=await api('/api/publish',{id});it.published=r.published;await refresh();toast(r.published?'🌍 Опубликовано в ленте':'Снято с ленты');openWork(id)}
+else if(act==='fav'){const r=await api('/api/fav',{id});it.fav=r.fav;renderGallery();openWork(id)}
+else if(act==='again'){closeSheet();it.kind==='doc'?openDoc(it.params.tpl,it.params.fields):openComposer(it.kind,it.params.prompt)}
+else if(act==='del'){await api('/api/delete',{id});S.gallery=S.gallery.filter(g=>g.id!==id);renderGallery();closeSheet();toast('Удалено',{label:'Вернуть',fn:async()=>{await api('/api/restore',{id});await refresh();toast('Восстановлено 👻')}})}
+else if(act==='edit'){openEditor(it)}
+else if(act==='email'){const to=prompt('Email получателя:');if(to){try{await api('/api/email',{id,to});toast('📧 Отправлено')}catch(x){toast(x.code==='smtp'?'SMTP не настроен на сервере':'Ошибка')}}}
+else if(act==='clip'){closeSheet();const songs=S.gallery.filter(g=>g.kind==='song');const sid=songs[0]?songs[0].id:'';await runJob({mode:'clip',photo:it.kind==='photo'?it.id:'',song:sid,prompt:it.params.prompt,dur:8},'clip')}
+else{closeSheet();await runJob({mode:act,work:id,prompt:it.params.prompt,style:it.params.style},act)}};}
+function openEditor(it){editWork=it;const img=new Image();img.onload=()=>{const cv=$('#editCv');cv.width=400;cv.height=500;const ctx=cv.getContext('2d');ctx.drawImage(img,0,0,400,500);maskCv=document.createElement('canvas');maskCv.width=400;maskCv.height=500;};
+const png=it.files.find(f=>f.name.endsWith('.png'))||it.files[0];img.src=png.url;$('#editPrompt').value=it.params.prompt||'';openSheet('#shEdit');
+const cv=$('#editCv');let draw=false;
+const pos=e=>{const r=cv.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return[(t.clientX-r.left)*400/r.width,(t.clientY-r.top)*500/r.height]};
+const paint=e=>{if(!draw||!maskCv)return;const[x,y]=pos(e);const m=maskCv.getContext('2d');m.fillStyle='#fff';m.beginPath();m.arc(x,y,+$('#brushSize').value/2,0,7);m.fill();
+const ctx=cv.getContext('2d');ctx.strokeStyle='rgba(255,92,168,.8)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,+$('#brushSize').value/2,0,7);ctx.stroke();e.preventDefault()};
+cv.onpointerdown=e=>{draw=true;paint(e)};cv.onpointermove=paint;cv.onpointerup=()=>draw=false;cv.onpointerleave=()=>draw=false;
+$('#clearMask').onclick=()=>{if(maskCv)maskCv.getContext('2d').clearRect(0,0,400,500);const ctx=cv.getContext('2d');ctx.drawImage(img,0,0,400,500)};
+$('#opInpaint').onclick=async()=>{if(!maskCv)return;closeSheet();await runJob({mode:'edit',work:editWork.id,op:'inpaint',mask:maskCv.toDataURL(),prompt:$('#editPrompt').value,style:C.style},'edit')};
+$('#opUpscale').onclick=async()=>{closeSheet();await runJob({mode:'edit',work:editWork.id,op:'upscale'},'edit')};
+$('#opBg').onclick=async()=>{closeSheet();await runJob({mode:'edit',work:editWork.id,op:'bgremove'},'edit')};}
+let docTpl='zayavlenie';
+function openDoc(tpl,fields){docTpl=tpl||docTpl;const t=S.doctpls.find(x=>x.id===docTpl)||S.doctpls[0];docTpl=t.id;
+$('#docTypes').innerHTML=S.doctpls.map(x=>'<button class="'+(x.id===docTpl?'on':'')+'" data-doc="'+x.id+'">'+x.title+'</button>').join('');
+$('#docFields').innerHTML=t.fields.map(f=>'<div class="lbl">'+esc(f.label)+'</div><input type="text" data-field="'+f.id+'" style="width:100%" value="'+esc((fields||{})[f.id]||'')+'">').join('');openSheet('#shDoc')}
+$('#docTypes').onclick=e=>{const b=e.target.closest('[data-doc]');if(b){sfx.tap();openDoc(b.dataset.doc)}};
+$('#profFill').onclick=async()=>{const p=await api('/api/profile');$$('#docFields [data-field]').forEach(i=>{if(p[i.dataset.field])i.value=p[i.dataset.field]});toast('👤 Подставлено')};
+$('#profSave').onclick=async()=>{const p={};$$('#docFields [data-field]').forEach(i=>p[i.dataset.field]=i.value);await api('/api/profile',p);toast('💾 Профиль сохранён')};
+$('#docGo').onclick=async()=>{const fields={};$$('#docFields [data-field]').forEach(i=>fields[i.dataset.field]=i.value);
+if(Object.values(fields).some(v=>!v.trim())){toast('Заполни все поля');return}
+closeSheet();await runJob({mode:'doc',tpl:docTpl,fields,prompt:Object.values(fields).join(' ')},'doc')};
+$('#batchGo').onclick=()=>{const f=$('#csvFile').files[0];if(!f){toast('Выбери CSV');return}const r=new FileReader();r.onload=async()=>{closeSheet();await runJob({mode:'batch',tpl:docTpl,csv:r.result},'doc');toast('📚 Batch в очереди')};r.readAsText(f)};
+function openPro(){const b=$('#proBody');const ref='https://t.me/LexKLBot?start=ref_'+S.user.id;
+let h=S.pro?'<div class="banner">'+(S.user.owner?'👑 Владелец — PRO навсегда.':'✅ PRO до '+new Date(S.pro_until*1000).toLocaleDateString('ru')+' · тариф '+S.user.tier)+'</div>':'<button class="cta" id="trialBtn">🎁 Триал PRO на 3 дня</button>';
+h+='<div class="lbl">Тарифы</div>'+[['lite','Lite · 2 задачи','100 ⭐'],['month','Pro · 3 задачи','250 ⭐'],['studio','Studio · 6 задач','600 ⭐'],['year','Pro · год','1990 ⭐']].map(p=>'<div class="plan '+(plan===p[0]?'on':'')+'" data-plan="'+p[0]+'"><div><b>'+p[1]+'</b><small>без водяного знака, приоритет</small></div><span class="pr">'+p[2]+'</span></div>').join('')+'<button class="cta" id="buyBtn">Оплатить ⭐</button>';
+h+='<div class="lbl">Подарить другу</div><div class="row"><input type="number" id="giftUid" placeholder="ID друга" style="flex:1"><button class="cta ghosty" id="giftBtn" style="width:auto;margin:0">🎁</button></div>';
+h+='<div class="lbl">Пакеты 👻</div><div class="btnrow"><button class="cta ghosty" data-pack="p10">10·50⭐</button><button class="cta ghosty" data-pack="p50">50·200⭐</button><button class="cta ghosty" data-pack="p200">200·700⭐</button></div>';
+h+='<div class="lbl">Промокод</div><div class="row"><input type="text" id="promoIn" placeholder="КОД" style="flex:1;text-transform:uppercase"><button class="cta" id="promoBtn" style="width:auto;margin:0;padding:10px 14px">OK</button></div>';
+h+='<div class="banner">🤝 Приглашено: <b>'+S.ref_count+'</b><br><small style="word-break:break-all">'+ref+'</small></div><button class="cta ghosty" id="refCopy">Скопировать ссылку</button>';
+b.innerHTML=h;openSheet('#shPro');
+b.onclick=async e=>{const p=e.target.closest('[data-plan]');if(p){plan=p.dataset.plan;sfx.tap();$$('#proBody .plan').forEach(x=>x.classList.toggle('on',x===p));return}
+const pk=e.target.closest('[data-pack]');if(pk){buy({pack:pk.dataset.pack});return}
+if(e.target.id==='buyBtn')buy({plan});
+if(e.target.id==='giftBtn'){const to=+$('#giftUid').value;if(!to){toast('Укажи ID друга');return}buy({plan,gift_to:to})}
+if(e.target.id==='trialBtn'){try{await api('/api/trial',{});await refresh();closeSheet();toast('👑 Триал активирован!');sfx.ach()}catch(x){toast('Триал уже использован')}}
+if(e.target.id==='promoBtn'){try{const r=await api('/api/promo',{code:$('#promoIn').value});await refresh();toast(r.kind==='pro'?'👑 +'+r.value+' дней':'👻 +'+r.value);sfx.ach()}catch(x){toast('Промокод недействителен')}}
+if(e.target.id==='refCopy'){try{await navigator.clipboard.writeText(ref);toast('Скопировано')}catch(x){toast(ref)}}};}
+async function buy(body){try{const r=await api('/api/invoice',body);if(inTG&&tg.openInvoice)tg.openInvoice(r.link,async st=>{if(st==='paid'){await refresh();closeSheet();toast('👑 Оплата получена!');sfx.ach();hap('ok')}});else toast('Оплата внутри Telegram')}catch(e){toast('Не вышло создать счёт')}}
+async function openQuests(){const q=await api('/api/quests');
+$('#questBody').innerHTML='<div class="banner">Уровень '+S.user.level+' · '+S.user.xp+' XP. Квесты дают +3 👻 и +25 XP.</div>'+q.quests.map(x=>'<div class="banner" style="opacity:'+(x.claimed?.6:1)+'"><b>'+x.title+'</b> · '+x.progress+'/'+x.target+(x.claimed?' ✅':(x.progress>=x.target?' <button class="cta" style="width:auto;margin:4px 0 0;padding:6px 12px" data-claim="'+x.key+'">Забрать</button>':''))+'</div>').join('')+'<div class="lbl">Скины призрака</div><div class="skinrow">'+Object.entries(SKINS).map(([k,v])=>'<button data-skin="'+k+'" class="'+(S.user.skin===k?'on':'')+'" style="background:'+v+'"></button>').join('')+'</div><div class="banner" style="margin-top:10px">Скины открываются по уровням: violet 3, magenta 5, amber 7, ice 9.</div>';
+openSheet('#shQuest');
+$('#questBody').onclick=async e=>{const c=e.target.closest('[data-claim]');if(c){try{await api('/api/quest/claim',{key:c.dataset.claim});await refresh();openQuests();toast('🎯 +3 👻 +25 XP');sfx.ach()}catch(x){toast('Ещё не выполнено')}}
+const s=e.target.closest('[data-skin]');if(s){try{await api('/api/skin',{skin:s.dataset.skin});await refresh();openQuests();sfx.tap()}catch(x){toast('Нужен уровень повыше')}}};}
+async function openFeed(tab){const seg=$('#feedSeg');$$('#feedSeg button').forEach(b=>b.classList.toggle('on',b.dataset.t===(tab||'feed')));
+if((tab||'feed')==='top'){const r=await api('/api/leaderboard');$('#feedBody').innerHTML='<div class="banner">🏆 Конкурс недели: лайки за 7 дней. Топ-10:</div>'+r.top.map((x,i)=>'<div class="banner">'+(i+1)+'. <b>'+esc(x.name)+'</b> · '+x.c+' ❤️</div>').join('')+(r.top.length?'':'<div class="empty">Пока пусто</div>');openSheet('#shFeed');return}
+const r=await api('/api/feed');
+$('#feedBody').innerHTML=r.feed.map(f=>{const img=f.files.find(x=>x.name.endsWith('.png')||x.name.endsWith('.svg'));
+return '<div class="feeditem"><div class="fh"><span>'+esc(f.name)+'</span><span>'+({photo:'🖼',video:'🎬',song:'🎵',clip:'🎬'})[f.kind]+'</span></div>'+(img?'<img src="'+img.url+'">':'')+'<p style="font:600 12.5px var(--body);color:var(--mut)">'+esc(f.params.prompt||'')+'</p><div class="btnrow"><button class="cta ghosty" data-like="'+f.id+'">'+(f.liked?'❤️':'🤍')+' '+f.likes+'</button><button class="cta ghosty" data-remix="'+f.id+'">🔀 Ремикс</button></div></div>'}).join('')||'<div class="empty">Лента пуста — опубликуй работу первым!</div>';
+openSheet('#shFeed');
+$('#feedBody').onclick=async e=>{const l=e.target.closest('[data-like]');if(l){const rr=await api('/api/like',{id:l.dataset.like});l.innerHTML=(rr.liked?'❤️':'🤍')+' '+rr.likes;sfx.tap()}
+const rm=e.target.closest('[data-remix]');if(rm){const f=r.feed.find(x=>x.id===rm.dataset.remix);closeSheet();openComposer(f.kind==='clip'?'photo':f.kind,f.params.prompt);C.style=f.params.style||C.style;syncComposer();toast('🔀 Ремикс: параметры скопированы')}};}
+$('#feedSeg').onclick=e=>{const b=e.target.closest('[data-t]');if(b)openFeed(b.dataset.t)};
+async function openAdmin(){const s=await api('/api/admin/stats');
+$('#adminBody').innerHTML='<div class="stats"><div class="stat"><b>'+s.users+'</b><small>юзеров</small></div><div class="stat"><b>'+s.pro+'</b><small>PRO</small></div><div class="stat"><b>'+(s.jobs.done||0)+'</b><small>генераций</small></div><div class="stat"><b>'+s.revenue+' ⭐</b><small>доход</small></div><div class="stat"><b>$'+s.spend+'</b><small>расход/24ч</small></div><div class="stat"><b>'+(s.jobs.error||0)+'</b><small>ошибок</small></div></div><div class="banner">Провайдеры: '+s.providers.map(p=>p.provider+' $'+p.s).join(' · ')+'</div><div class="banner">События: '+s.events.map(e=>e.name+':'+e.c).join(' · ')+'</div><div class="lbl">A/B-флаги и сезон</div><div class="row"><input type="text" id="fKey" placeholder="key" style="flex:1"><input type="text" id="fVal" placeholder="val" style="flex:1"><input type="number" id="fPct" value="100" style="width:70px"></div><button class="cta ghosty" id="fSet">Установить флаг</button><div class="banner">'+s.flags.map(f=>f.key+'='+f.val+' ('+f.pct+'%)').join(' · ')+'</div><div class="lbl">Выдать юзеру</div><div class="row"><input type="number" id="aUid" placeholder="ID" style="flex:1"><input type="number" id="aDays" placeholder="дней" style="width:80px"><input type="number" id="aBal" placeholder="👻" style="width:70px"></div><button class="cta" id="aGrant">Выдать</button><div class="lbl">Промокод</div><div class="row"><input type="text" id="pCode" placeholder="КОД" style="flex:1"><select id="pKind"><option value="balance">👻</option><option value="pro">PRO</option></select><input type="number" id="pVal" value="5" style="width:70px"></div><button class="cta ghosty" id="pCreate">Создать</button><div class="lbl">Рассылка</div><textarea id="bcText"></textarea><button class="cta" id="bcBtn">Разослать</button>';
+openSheet('#shAdmin');
+$('#fSet').onclick=async()=>{await api('/api/admin/flag',{key:$('#fKey').value,val:$('#fVal').value,pct:+$('#fPct').value});toast('Флаг установлен');openAdmin()};
+$('#aGrant').onclick=async()=>{try{await api('/api/admin/user',{uid:+$('#aUid').value,days:+$('#aDays').value||0,balance:+$('#aBal').value||0});toast('Выдано ✅')}catch(e){toast('Ошибка')}};
+$('#pCreate').onclick=async()=>{const r=await api('/api/admin/promo',{code:$('#pCode').value,kind:$('#pKind').value,value:+$('#pVal').value});toast('Промо '+r.code)};
+$('#bcBtn').onclick=async()=>{if(!$('#bcText').value.trim())return;await api('/api/admin/broadcast',{text:$('#bcText').value});toast('📨 В очереди')}}
+const ONB=[['👻 Добро пожаловать','Это твоя AI-студия: фото, видео, песни, клипы и документы — всё в одном меню.'],['🎯 Квесты и лента','Выполняй квесты, качай уровень, открывай скины призрака и публикуй работы в ленту за лайки.'],['🔔 Уведомления','Разреши уведомления — бот пришлёт готовые клипы и напомнит о серии бонусов.']];
+let onbStep=0;
+function showOnb(){if(!S.flags.onboarding||localStorage.getItem('lex.onb'))return;onbStep=0;$('#onb').classList.add('on');paintOnb()}
+function paintOnb(){$('#onbT').textContent=ONB[onbStep][0];$('#onbP').textContent=ONB[onbStep][1];$('#onbNext').textContent=onbStep===2?'Разрешить и начать':'Дальше'}
+$('#onbNext').onclick=async()=>{if(onbStep===2){if(inTG&&tg.requestWriteAccess)tg.requestWriteAccess(async ok=>{if(ok)await api('/api/writeok',{})});localStorage.setItem('lex.onb','1');$('#onb').classList.remove('on');return}onbStep++;paintOnb()};
+$('#onbSkip').onclick=()=>{localStorage.setItem('lex.onb','1');$('#onb').classList.remove('on')};
+$('#pInput').oninput=e=>$('#pGo').disabled=!e.target.value.trim();
+$('#pForm').onsubmit=e=>{e.preventDefault();sfx.tap();openComposer('photo')};
+$('#diceBtn').onclick=()=>{$('#pInput').value=IDEAS[Math.floor(Math.random()*IDEAS.length)];$('#pGo').disabled=false;sfx.tap()};
+$$('.card[data-mode]').forEach(b=>b.onclick=()=>{sfx.tap();hap();openComposer(b.dataset.mode)});
+$('#docCard').onclick=()=>{sfx.tap();openDoc()};
+$('#chatBtn').onclick=()=>{sfx.tap();inTG?tg.close():toast('Открой бота в Telegram')};
+$('#proBtn').onclick=()=>{sfx.tap();openPro()};$('#balChip').onclick=()=>{sfx.tap();openPro()};
+$('#questBtn').onclick=()=>{sfx.tap();openQuests()};$('#feedBtn').onclick=()=>{sfx.tap();openFeed()};
+$('#achBtn').onclick=()=>{sfx.tap();renderAch();openSheet('#shAch')};
+$('#adminBtn').onclick=()=>{sfx.tap();openAdmin().catch(()=>toast('Нет доступа'))};
+$('#bonusBtn').onclick=async()=>{try{const r=await api('/api/bonus',{});await refresh();toast('🎁 +'+r.amount+' 👻 · серия '+r.streak);sfx.ach();hap('ok')}catch(e){toast('Уже забран')}};
+$('#gSearch').oninput=renderGallery;
+$('#gFilter').onclick=e=>{const b=e.target.closest('[data-f]');if(b){$$('#gFilter button').forEach(x=>x.classList.toggle('on',x===b));sfx.tap();renderGallery()}};
+document.addEventListener('click',e=>{const w=e.target.closest('[data-work]');if(w){sfx.tap();openWork(w.dataset.work);return}
+const t=e.target.closest('[data-tpl]');if(t){const x=TPL[+t.dataset.tpl];sfx.tap();openComposer(x.m,x.p);if(x.mood)C.mood=x.mood;C.style=x.s;syncComposer()}});
+$('#sndBtn').onclick=()=>{SET.sound=!SET.sound;saveSet();applySet();if(SET.sound)sfx.ok()};
+$('#setBtn').onclick=()=>{sfx.tap();applySet();openSheet('#shSet')};
+$('#setSnd').onclick=()=>{SET.sound=!SET.sound;saveSet();applySet();if(SET.sound)sfx.ok()};
+$('#setHap').onclick=()=>{SET.haptics=!SET.haptics;saveSet();applySet();hap()};
+$('#setMot').onclick=()=>{SET.motion=!SET.motion;saveSet();applySet();sfx.tap()};
+$('#themeChips').onclick=e=>{const b=e.target.closest('[data-t]');if(b){SET.theme=b.dataset.t;saveSet();applySet();sfx.tap()}};
+$('#fsBtn').onclick=()=>{try{tg.requestFullscreen?tg.requestFullscreen():toast('Недоступно')}catch(e){toast('Недоступно')}};
+$('#homeBtn').onclick=()=>{try{tg.addToHomeScreen?tg.addToHomeScreen():toast('Недоступно')}catch(e){toast('Недоступно')}};
+$('#writeBtn').onclick=()=>{if(inTG&&tg.requestWriteAccess)tg.requestWriteAccess(async ok=>{if(ok){await api('/api/writeok',{});toast('🔔 Уведомления разрешены')}else toast('Отклонено')});else toast('Недоступно')};
+$('#keyBtn').onclick=async()=>{const r=await api('/api/key',{});await refresh();toast('🔑 Ключ создан');try{await navigator.clipboard.writeText(r.key)}catch(e){}};
+async function boot(){applySet();renderTpl();
+if(!inTG){document.body.innerHTML='<div style="padding:40px;text-align:center;font:700 16px var(--body)">Открой меню внутри Telegram 👻</div>';return}
+try{await refresh();showOnb();const sp=tg.initDataUnsafe.start_param;
+if(sp==='pro')openPro();else if(sp==='admin'&&S.user.admin)openAdmin();else if(sp==='feed')openFeed();else if(sp==='quests')openQuests();
+else if(sp&&sp.startsWith('tpl_')){const i=+sp.slice(4);if(TPL[i]){openComposer(TPL[i].m,TPL[i].p);C.style=TPL[i].s;syncComposer()}}
+else if(sp&&sp.startsWith('doc_'))openDoc(sp.slice(4));}catch(e){toast('Сервер недоступен: '+(e.code||'сеть'))}}
+boot();})();
+</script></body></html>
